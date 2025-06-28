@@ -1,12 +1,14 @@
 package org.alex
 
 import kotlinx.coroutines.runBlocking
-import org.alex.repository.notes.NotesRepository
-import org.alex.repository.user.UserRepository
+import org.alex.configuration.RepositoryInjection
+import org.alex.configuration.create
 
 fun main() = runBlocking {
-    val userRepository = UserRepository()
-    val notesRepository = NotesRepository()
+    val inject = RepositoryInjection::class.create()
+
+    val userRepository = inject.userRepository
+    val notesRepository = inject.notesRepository
 
     userRepository.login("peter", "peter")
 
@@ -15,6 +17,10 @@ fun main() = runBlocking {
     notes.forEach { note ->
         println(note.id)
         println(note.title)
+        println(note.description)
+        println(note.createdAt)
+        println(note.updatedAt)
+        println("---------------------------")
     }
 
     println("notes: $notes")

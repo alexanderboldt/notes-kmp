@@ -15,27 +15,28 @@ import kotlinx.serialization.json.Json
 /**
  * Manages the connection to the backend and contains the individual routes.
  */
-internal object ApiClient {
+object ApiClient {
 
     private val KEYCLOAK_URL = "http://localhost:8080/realms/notes/protocol/openid-connect/token"
     private val KEYCLOAK_CLIENT_ID = "notes-client"
     private val KEYCLOAK_CLIENT_SECRET = "WCV8MP3xIySAmFU7yBucXYIKNbxeD404"
     private val BASE_URL = "http://localhost:9000/api/"
-    private val NOTES = "v1/notes"
+    private val NOTES_URL = "v1/notes"
 
     private val client = HttpClient(OkHttp) {
         install(ContentNegotiation) {
             json(
                 Json {
+                    prettyPrint = true
                     isLenient = false
                     ignoreUnknownKeys = true
+                    explicitNulls = false
                 }
             )
         }
 
         defaultRequest {
             url(BASE_URL)
-            header("Client-Secret", "e4bbe5b7a4c1eb55652965aee885dd59bd2ee7f4")
         }
     }
 
@@ -50,7 +51,7 @@ internal object ApiClient {
         }
     )
 
-    suspend fun getAllNotes(accessToken: String) = client.get(NOTES) {
+    suspend fun getAllNotes(accessToken: String) = client.get(NOTES_URL) {
         header(HttpHeaders.Authorization, "Bearer $accessToken")
     }
 }
