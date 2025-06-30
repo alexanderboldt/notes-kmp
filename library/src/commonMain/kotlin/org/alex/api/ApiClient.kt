@@ -4,13 +4,20 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.request.bearerAuth
+import io.ktor.client.request.delete
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import org.alex.repository.notes.Note
 
 /**
  * Manages the connection to the backend and contains the individual routes.
@@ -37,6 +44,7 @@ object ApiClient {
 
         defaultRequest {
             url(BASE_URL)
+            header(HttpHeaders.ContentType, ContentType.Application.Json)
         }
     }
 
@@ -51,7 +59,25 @@ object ApiClient {
         }
     )
 
+    suspend fun createNote(accessToken: String, note: Note) = client.post(NOTES_URL) {
+        bearerAuth(accessToken)
+        setBody(note)
+    }
+
     suspend fun getAllNotes(accessToken: String) = client.get(NOTES_URL) {
-        header(HttpHeaders.Authorization, "Bearer $accessToken")
+        bearerAuth(accessToken)
+    }
+
+    suspend fun getOne(accessToken: String, id: Int) = client.get("$NOTES_URL/$id") {
+        bearerAuth(accessToken)
+    }
+
+    suspend fun update(accessToken: String, id: Int, note: Note) = client.put("$NOTES_URL/$id") {
+        bearerAuth(accessToken)
+        setBody(note)
+    }
+
+    suspend fun delete(accessToken: String, id: Int) = client.delete("$NOTES_URL/$id") {
+        bearerAuth(accessToken)
     }
 }
