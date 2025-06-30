@@ -4,7 +4,9 @@ import com.russhwolf.settings.Settings
 
 class UserSettings {
 
-    private val KEY_ACCESS_TOKEN = "access_token"
+    companion object {
+        private const val KEY_ACCESS_TOKEN = "access_token"
+    }
 
     private val settings: Settings = Settings()
 

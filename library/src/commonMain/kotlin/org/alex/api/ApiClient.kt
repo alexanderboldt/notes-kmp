@@ -17,11 +17,11 @@ import kotlinx.serialization.json.Json
  */
 object ApiClient {
 
-    private val KEYCLOAK_URL = "http://localhost:8080/realms/notes/protocol/openid-connect/token"
-    private val KEYCLOAK_CLIENT_ID = "notes-client"
-    private val KEYCLOAK_CLIENT_SECRET = "WCV8MP3xIySAmFU7yBucXYIKNbxeD404"
-    private val BASE_URL = "http://localhost:9000/api/"
-    private val NOTES_URL = "v1/notes"
+    private const val KEYCLOAK_URL = "http://localhost:8080/realms/notes/protocol/openid-connect/token"
+    private const val KEYCLOAK_CLIENT_ID = "notes-client"
+    private const val KEYCLOAK_CLIENT_SECRET = "WCV8MP3xIySAmFU7yBucXYIKNbxeD404"
+    private const val BASE_URL = "http://localhost:9000/api/"
+    private const val NOTES_URL = "v1/notes"
 
     private val client = HttpClient(OkHttp) {
         install(ContentNegotiation) {

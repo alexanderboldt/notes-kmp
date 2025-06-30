@@ -10,9 +10,9 @@ suspend inline fun <reified T> HttpResponse.onSuccess(block: suspend (body: T) -
     return this
 }
 
-suspend inline fun <reified T> HttpResponse.toResult(): org.alex.repository.Result<T> {
+suspend inline fun <reified T> HttpResponse.toResult(): Result<T> {
     return if (status == HttpStatusCode.OK) {
-        org.alex.repository.Result.Success(body<T>())
+        Result.Success(body<T>())
     } else {
         Result.Error(status.value)
     }
