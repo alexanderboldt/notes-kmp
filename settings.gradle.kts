@@ -13,7 +13,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "notes-kmp"
+rootProject.name = "news-kmp"
 
 include(":library")
 include("app")
