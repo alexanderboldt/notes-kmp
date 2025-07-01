@@ -3,7 +3,6 @@ package org.alex
 import kotlinx.coroutines.runBlocking
 import org.alex.configuration.RepositoryInjection
 import org.alex.configuration.create
-import org.alex.repository.Result
 import org.alex.repository.notes.Note
 
 fun main() = runBlocking {
@@ -13,70 +12,49 @@ fun main() = runBlocking {
     val notesRepository = inject.notesRepository
 
     // login
-    val resultLogin = userRepository.login("peter", "peter")
-
-    if (resultLogin is Result.Error) {
-        println("Could not log in!")
-        return@runBlocking
-    }
+    userRepository
+        .login("peter", "peter")
+        .onSuccess { println("User successfully logged in!") }
+        .onError { statusCode -> println("Could not log in! Statuscode: $statusCode") }
 
     // create a note
-    val resultNoteCreate = notesRepository.create(Note(0, "Desktop aufräumen", "Tastatur und Maus nicht vergessen", 0, 0))
-
-    if (resultNoteCreate is Result.Error) {
-        println("Could not create note!")
-        return@runBlocking
-    }
-
-    resultNoteCreate as Result.Success
-    printNote(resultNoteCreate.body)
+    notesRepository
+        .create(Note(0, "Desktop aufräumen", "Tastatur und Maus nicht vergessen", 0, 0))
+        .onSuccess { println("Deleted note!") }
+        .onError { println("Could not create note!") }
 
     // get one note
-    val resultNote = notesRepository.getOne(35)
-
-    if (resultNote is Result.Error) {
-        println("Could not fetch one note!")
-        return@runBlocking
-    }
-
-    resultNote as Result.Success
-    printNote(resultNote.body)
+    notesRepository
+        .getOne(35)
+        .onSuccess { note -> printNote(note) }
+        .onError { println("Could not fetch one note!") }
 
     // update
-    val resultNoteUpdated = notesRepository.update(46, Note(0, "Desktop und Büro aufräumen", null, 0 , 0))
-
-    if (resultNoteUpdated is Result.Error) {
-        println("Could not update note!")
-        return@runBlocking
-    }
-
-    resultNoteUpdated as Result.Success
-    printNote(resultNote.body)
+    notesRepository
+        .update(46, Note(0, "Desktop und Büro aufräumen", null, 0 , 0))
+        .onSuccess { note -> printNote(note)  }
+        .onError { println("Could not update note!") }
 
     // delete a note
-    val resultNoteDeleted = notesRepository.delete(40)
-
-    if (resultNoteDeleted is Result.Error) {
-        println("Could not delete note!")
-        return@runBlocking
-    }
+    notesRepository
+        .delete(40)
+        .onSuccess { println("Deleted note!") }
+        .onError { println("Could not delete note!") }
 
     // get all notes
-    val resultNotes = notesRepository.getAll()
+    notesRepository
+        .getAll()
+        .onSuccess { notes ->
+            notes.forEach { note ->
+                printNote(note)
+                println("---------------------------")
+            }
+        }.onError { println("Could not fetch notes!") }
 
-    if (resultNotes is Result.Error) {
-        println("Could not fetch notes!")
-        return@runBlocking
-    }
-
-    resultNotes as Result.Success
-    resultNotes.body.forEach { note ->
-        printNote(note)
-        println("---------------------------")
-    }
+    return@runBlocking
 }
 
-fun printNote(note: Note) {
+private fun printNote(note: Note) {
     println(note.id)
     println(note.title)
     println(note.description)

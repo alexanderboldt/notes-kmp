@@ -1,6 +1,7 @@
 package org.alex.api
 
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -12,12 +13,16 @@ import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.isSuccess
 import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import org.alex.repository.Result
 import org.alex.repository.notes.Note
+import org.alex.repository.user.User
 
 /**
  * Manages the connection to the backend and contains the individual routes.
@@ -57,27 +62,35 @@ object ApiClient {
             append("username", username)
             append("password", password)
         }
-    )
+    ).toResult<User>()
 
     suspend fun createNote(accessToken: String, note: Note) = client.post(NOTES_URL) {
         bearerAuth(accessToken)
         setBody(note)
-    }
+    }.toResult<Note>()
 
     suspend fun getAllNotes(accessToken: String) = client.get(NOTES_URL) {
         bearerAuth(accessToken)
-    }
+    }.toResult<List<Note>>()
 
     suspend fun getOne(accessToken: String, id: Int) = client.get("$NOTES_URL/$id") {
         bearerAuth(accessToken)
-    }
+    }.toResult<Note>()
 
     suspend fun update(accessToken: String, id: Int, note: Note) = client.put("$NOTES_URL/$id") {
         bearerAuth(accessToken)
         setBody(note)
-    }
+    }.toResult<Note>()
 
     suspend fun delete(accessToken: String, id: Int) = client.delete("$NOTES_URL/$id") {
         bearerAuth(accessToken)
+    }.toResult<Unit>()
+}
+
+private suspend inline fun <reified T> HttpResponse.toResult(): Result<T> {
+    return if (status.isSuccess()) {
+        Result.Success(body<T>())
+    } else {
+        Result.Error(status.value)
     }
 }

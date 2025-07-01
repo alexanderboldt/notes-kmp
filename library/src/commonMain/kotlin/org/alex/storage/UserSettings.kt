@@ -15,4 +15,6 @@ class UserSettings {
     }
 
     fun getAccessToken() = settings.getString(KEY_ACCESS_TOKEN, "")
+
+    fun deleteAccessToken() = settings.remove(KEY_ACCESS_TOKEN)
 }
