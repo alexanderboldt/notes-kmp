@@ -1,4 +1,4 @@
-package org.alex.repository
+package org.alex.data.network
 
 sealed class Result<out T> {
     data class Success<T>(val body: T) : Result<T>()

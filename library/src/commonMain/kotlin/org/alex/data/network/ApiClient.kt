@@ -1,4 +1,4 @@
-package org.alex.api
+package org.alex.data.network
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -14,11 +14,10 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import org.alex.repository.article.ArticleResponse
-import org.alex.repository.Result
-import org.alex.repository.source.SourceResponse
+import org.alex.data.model.ArticleResponse
+import org.alex.data.model.SourceResponse
 
-object ApiClient {
+internal object ApiClient {
 
     private const val BASE_URL = "https://newsapi.org/v2/"
     private const val SOURCES_URL = "top-headlines/sources"

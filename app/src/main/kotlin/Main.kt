@@ -1,11 +1,11 @@
 package org.alex
 
 import kotlinx.coroutines.runBlocking
-import org.alex.configuration.RepositoryInjection
-import org.alex.configuration.create
+import org.alex.di.DataInjection
+import org.alex.di.create
 
 fun main() = runBlocking {
-    val inject = RepositoryInjection::class.create()
+    val inject = DataInjection::class.create()
 
     val sourceRepository = inject.sourceRepository
     val articleRepository = inject.articleRepository

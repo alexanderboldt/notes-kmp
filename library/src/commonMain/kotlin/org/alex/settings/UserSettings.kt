@@ -1,8 +1,8 @@
-package org.alex.storage
+package org.alex.settings
 
 import com.russhwolf.settings.Settings
 
-class UserSettings {
+internal class UserSettings {
 
     companion object {
         private const val KEY_ACCESS_TOKEN = "access_token"
